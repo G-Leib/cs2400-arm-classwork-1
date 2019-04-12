@@ -1,4 +1,6 @@
 		adr		r4, memstore	;Store initial allocation location
+		adr		r5, storeptr	;Store the location of storage pointer
+		str		r4, [r5]		;Put the memstore location in the storage pointer
 main
 		sub		sp, sp, #12
 		mov		r0, #400
@@ -15,12 +17,29 @@ main
 		ldr		pc, [sp], #4
 		end
 malloc
+		str		r4, [sp]		;Save information in r4 on the stack
+		sub		sp, sp, #4	;Point to next location on the stack
+		str		r5, [sp]		;Save information in r5 on the stack
+		adr		r5, storeptr	;Load the address of the storage pointer into r5
+		ldr		r4, [r5]		;Put the address found in storage point into r4
 		str		r0, [r4], r0	;store array size at next location and increment location by array size
 		add		r4, r4, #4	;increment by an addition 4 bytes to account for the storage of array size
+		str		r4, [r5]		;Store the next location into the storage
+		ldr		r5, [sp], #4	;Put the old r5 value back into r5 from the stack and increment (position at start of malloc)
+		ldr		r4, [sp]		;Put the old r4 value back into r4 from the stack
 		mov		pc, lr		;link back to bl
 free
-		sub		r4, r4, #4	;
-		ldr		r5, [r4], -r0
+		str		r4, [sp]		;Save information in r4 on the stack
+		sub		sp, sp, #4	;Point to next location on the stack
+		str		r5, [sp]		;Save information in r5 on the stack
+		adr		r5, storeptr	;Load the address of the storage pointer into r5
+		ldr		r4, [r5]		;Save into r4 the address found in r5
+		sub		r4, r4, r0	;Decrement address in r4 by array size
+		sub		r4, r4, #4	;Subtract an additional 4 bytes from r4 for array size information
+		str		r4, [r5]		;Store new address in storage pointer
+		ldr		r5, [sp], #4	;Put the old r5 value back into r5 from the stack and increment (position at start of malloc)
+		ldr		r4, [sp]		;Put the old r4 value back into r4 from the stack
 		mov		pc, lr
+storeptr	FILL		4
 memstore	FILL		1000
 storesize	DCD		1000
