@@ -2,6 +2,7 @@
 		adr		r5, storeptr	;Store the location of storage pointer
 		str		r4, [r5]		;Put the memstore location in the storage pointer
 main
+		str		lr, [sp]
 		sub		sp, sp, #12
 		mov		r0, #400
 		bl		malloc
