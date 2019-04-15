@@ -12,6 +12,9 @@ Arguments are passed to `malloc` and `free` by storing them in register 0.
 ### 1.
 The difference between the programs is that `malloc aray` passes 400 to `malloc` and `free` instead of just 4.
 
-# arrays
+# 2d array
+### 2.
+The loops are also nested in assembly. The inner for loop (dimension j, or columns) is handled by labels 5 and 3, or lines 7-28
+while the outer loop (dimension i, or rows) is handled by lines 3-5 and 29-35
 
-# 2d arrays
+# 2d array with mul
